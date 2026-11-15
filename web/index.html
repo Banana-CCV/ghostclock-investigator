@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GhostClock Investigator</title>
+<style>
+:root{
+  --bg:#090b0e; --panel:#10141a; --panel2:#0c1015; --line:#1f2630; --text:#e9eef4; --muted:#8793a3; --dim:#5b6675;
+  --amber:#ffb23e; --cyan:#58cfff; --green:#3ddc84; --red:#ff6b6b; --violet:#b9a6ff;
+  --mono: ui-monospace,"Cascadia Code","Cascadia Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.45 "Segoe UI",Inter,system-ui,sans-serif;overflow:hidden}
+header{height:52px;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:1px solid var(--line)}
+.logo{font-weight:700;font-size:17px;letter-spacing:.2px;display:flex;align-items:center;gap:9px}
+.logo i{width:18px;height:18px;border-radius:50%;border:2px solid var(--amber);position:relative;display:inline-block}
+.logo i:after{content:"";position:absolute;left:6px;top:2px;width:2px;height:6px;background:var(--amber);transform-origin:bottom;animation:tick 4s linear infinite}
+@keyframes tick{to{transform:rotate(360deg)}}
+.logo b{color:var(--amber);font-weight:700}
+header select,header button{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit}
+header button.primary{background:var(--amber);color:#1b1203;border:0;font-weight:650;cursor:pointer}
+.status{margin-left:auto;color:var(--muted);font:12px var(--mono);display:flex;align-items:center;gap:8px}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--dim)} .live .pulse{background:var(--green);animation:pl 1.2s ease infinite}
+@keyframes pl{50%{opacity:.25}}
+main{display:grid;grid-template-columns:372px minmax(0,1fr) 430px;gap:12px;padding:12px;height:calc(100% - 52px - 118px);overflow:hidden}
+.col{display:flex;flex-direction:column;gap:12px;min-height:0;height:100%;overflow:hidden}
+.col>.panel{flex-shrink:0}
+.col>.panel.grow{flex-shrink:1}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:0}
+.panel h3{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted);font-weight:600;display:flex;gap:8px;align-items:center}
+.scroll{overflow:auto} .grow{flex:1}
+/* case */
+.case-title{font-size:16px;font-weight:650;margin-bottom:4px}
+.brief{color:var(--muted);font-size:13px}
+.claim{margin-top:10px;border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:8px;padding:8px 10px;font-size:13px;background:var(--panel2)}
+.claim small{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:10px;margin-bottom:2px}
+.ev{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#000}
+.ev video,.ev img{width:100%;max-height:250px;object-fit:contain;display:block;background:#000}
+.ev .tag{position:absolute;left:8px;top:8px;background:#000a;border:1px solid #fff3;border-radius:6px;padding:2px 7px;font:11px var(--mono)}
+.thumbs{display:flex;gap:6px;margin-top:6px} .thumbs img{width:calc(25% - 5px);height:46px;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
+/* board */
+.hyp{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;padding:5px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.hyp:last-child{border:0}
+.chip{font:10px var(--mono);padding:2px 6px;border-radius:20px;border:1px solid var(--dim);color:var(--muted);white-space:nowrap;margin-top:1px}
+.supported .chip{border-color:var(--green);color:var(--green)} .weakened .chip{border-color:var(--amber);color:var(--amber)}
+.ruled_out .chip{border-color:var(--red);color:var(--red)} .ruled_out .st{color:var(--dim);text-decoration:line-through}
+.hyp small{display:block;color:var(--muted)}
+.plan{margin:6px 0 0;padding-left:18px;color:var(--muted);font-size:12.5px} .plan li{margin:1px 0}
+.pv{color:var(--violet);font:11px var(--mono);border:1px solid var(--violet);border-radius:20px;padding:0 7px}
+/* stage */
+.stage{display:grid;grid-template-rows:auto 1fr 1fr;gap:12px;min-height:0;height:100%}
+.duel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sensor{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--panel2);transition:.4s}
+.sensor .nm{font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.sensor .bar{height:8px;border-radius:5px;background:#1a2028;margin:7px 0 5px;overflow:hidden}
+.sensor .bar i{display:block;height:100%;width:0;background:var(--muted);transition:width 1s ease}
+.sensor small{color:var(--muted);font:11.5px var(--mono)}
+.sensor.win{border-color:var(--amber)} .sensor.win .bar i{background:var(--amber)}
+.sensor.lose{opacity:.5} .sensor.lose .nm span:first-child{text-decoration:line-through;text-decoration-color:var(--dim)}
+.badge{font:10px var(--mono);padding:1px 7px;border-radius:20px;border:1px solid var(--dim);color:var(--muted)}
+.win .badge{border-color:var(--amber);color:var(--amber)} .lose .badge{border-color:var(--red);color:var(--red)}
+.chart{position:relative;background:var(--panel2);border:1px solid var(--line);border-radius:10px;min-height:0;overflow:hidden}
+.chart .cap{position:absolute;left:12px;top:8px;font-size:12px;color:var(--muted);z-index:2}
+.chart .cap b{color:var(--text);font-weight:600}
+.chart .leg{position:absolute;right:12px;top:8px;font:11px var(--mono);color:var(--muted);z-index:2}
+.leg i{display:inline-block;width:14px;height:3px;border-radius:2px;margin:0 5px 2px 12px;vertical-align:middle}
+.chart canvas{position:absolute;inset:0;width:100%;height:100%}
+[hidden]{display:none!important}
+.empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:12.5px}
+.stamps{position:absolute;right:12px;bottom:10px;display:flex;gap:8px;z-index:3}
+.stamp{font:11px var(--mono);border:1.5px solid var(--dim);color:var(--muted);border-radius:6px;padding:3px 8px;transform:rotate(-2deg);opacity:0;animation:st .5s forwards}
+.stamp.ok{border-color:var(--green);color:var(--green)} .stamp.no{border-color:var(--red);color:var(--red)}
+@keyframes st{from{opacity:0;transform:scale(1.6) rotate(-8deg)}to{opacity:1;transform:scale(1) rotate(-2deg)}}
+/* notebook */
+.cards{display:flex;flex-direction:column;gap:9px}
+.card{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--panel2);animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.card .hd{display:flex;align-items:center;gap:8px;font-weight:600}
+.card .n{font:11px var(--mono);color:var(--dim)}
+.card .why{color:#c9d2dd;font-size:13px;margin:4px 0 0}
+.card .why:before{content:"because  ";color:var(--dim);font:10px var(--mono);text-transform:uppercase;letter-spacing:1px}
+.card .res{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);font:12px var(--mono);color:var(--muted);white-space:pre-wrap}
+.card .res b{color:var(--text);font-weight:600} .ok{color:var(--green)} .no{color:var(--red)} .am{color:var(--amber)} .cy{color:var(--cyan)}
+.card.request{border-color:var(--amber);background:#1a1407} .card.supplied{border-color:var(--green);background:#0b1a11}
+.note{color:var(--muted);font-size:12.5px;font-style:italic;padding:0 4px;animation:in .35s ease}
+.spin{display:inline-block;width:10px;height:10px;border:2px solid var(--dim);border-top-color:var(--amber);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* footer */
+footer{height:106px;margin:0 12px 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:center;padding:0 20px}
+.verdict{font-weight:750;font-size:18px;letter-spacing:.4px;padding:8px 14px;border-radius:10px;border:1.5px solid var(--dim);color:var(--muted);max-width:420px;line-height:1.2}
+.verdict.CORROBORATED{color:var(--green);border-color:var(--green)} .verdict.DISCREPANCY{color:var(--amber);border-color:var(--amber)}
+.verdict.INCONCLUSIVE,.verdict.WAITING{color:var(--violet);border-color:var(--violet)}
+.headline{font-size:15px;line-height:1.35} .headline small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.times{display:flex;gap:14px;align-items:center;font-family:var(--mono)}
+.tbox{text-align:center} .tbox small{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.tbox b{font-size:22px} .tbox.rec b{color:var(--green)} .tbox.stated b{color:var(--muted)} .arrow{color:var(--dim);font-size:20px}
+.strip{display:flex;gap:6px;flex-wrap:nowrap;overflow:hidden;margin-top:6px}
+.step{font:10.5px var(--mono);padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;animation:in .3s}
+.step.k{border-color:var(--amber);color:var(--amber)} .step.g{border-color:var(--green);color:var(--green)} .step.v{border-color:var(--violet);color:var(--violet)}
+button.sup{background:var(--amber);border:0;border-radius:8px;padding:6px 10px;font-weight:650;cursor:pointer;margin-right:6px}
+button.sup.alt{background:transparent;border:1px solid var(--line);color:var(--muted)}
+
+/* presentation mode (?present=1): used for the demo video. Larger type, no header controls. */
+html.present{zoom:1.3334}
+body.present header select, body.present header button{display:none}
+body.present .thumbs{display:none} body.present .ev video, body.present .ev img{max-height:150px}
+body.present main{grid-template-columns:330px minmax(0,1fr) 392px}
+body.present .brief{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+body.present .card .why{font-size:13.5px} body.present .note{font-size:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+body.present .hyp small{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+body.present .plan{display:none}
+body.present .headline{font-size:14.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+body.present .headline small{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><i></i><span>Ghost<b>Clock</b></span></div>
+  <select id="caseSel"></select>
+  <button class="primary" id="go">Investigate</button>
+  <select id="pastSel"><option value="">replay a run…</option></select>
+  <div class="status" id="status"><span class="pulse"></span><span id="stxt">idle</span></div>
+</header>
+<main>
+  <div class="col">
+    <section class="panel">
+      <h3>Case file</h3>
+      <div class="case-title" id="ctitle">No case open</div>
+      <div class="brief" id="cbrief">Choose a case and press Investigate.</div>
+      <div class="claim" id="claim" hidden><small>What is being claimed</small><span id="claimtxt"></span></div>
+    </section>
+    <section class="panel">
+      <h3>Evidence</h3>
+      <div class="ev" id="ev"><div style="padding:34px;text-align:center;color:var(--dim)">no evidence viewed yet</div></div>
+      <div class="thumbs" id="thumbs"></div>
+    </section>
+    <section class="panel grow scroll">
+      <h3>Case board <span class="pv" id="planv" hidden></span></h3>
+      <div id="hyps"><div class="brief">The agent's competing explanations will appear here.</div></div>
+      <ol class="plan" id="plan"></ol>
+    </section>
+  </div>
+  <div class="col">
+    <section class="panel" style="height:100%">
+      <div class="stage">
+        <div class="duel">
+          <div class="sensor" id="sAudio"><div class="nm"><span>Sound: mains hum</span><span class="badge">not checked</span></div><div class="bar"><i></i></div><small>&nbsp;</small></div>
+          <div class="sensor" id="sLight"><div class="nm"><span>Picture: light flicker</span><span class="badge">not checked</span></div><div class="bar"><i></i></div><small>&nbsp;</small></div>
+        </div>
+        <div class="chart"><div class="cap" id="capA"><b>The grid's fingerprint</b> hidden in this recording</div>
+          <div class="leg" id="legA"></div><canvas id="cA"></canvas><div class="empty" id="eA">waiting for a signal…</div></div>
+        <div class="chart"><div class="cap" id="capB"><b>Search</b> of the national grid record</div>
+          <div class="leg" id="legB"></div><canvas id="cB"></canvas><div class="empty" id="eB">no search yet</div><div class="stamps" id="stamps"></div></div>
+      </div>
+    </section>
+  </div>
+  <div class="col">
+    <section class="panel grow scroll" id="nbwrap"><h3>Agent's notebook <span class="n" id="count"></span></h3><div class="cards" id="cards"></div></section>
+  </div>
+</main>
+<footer>
+  <div class="verdict" id="verdict">NO VERDICT YET</div>
+  <div><div class="headline" id="headline">The investigation's conclusion will appear here.</div><div class="strip" id="strip"></div></div>
+  <div class="times" id="times"></div>
+</footer>
+<script>
+const $=s=>document.querySelector(s), css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+let runId=null, es=null, nCard=0, lastSearch=null, lastTrace=null; const CALLS={};
+const NAMES={view_frames:"Looked at the footage",probe_signals:"Tested both sensors",extract_trace:"Read the grid's fingerprint",
+  grid_coverage:"Checked which grid records exist",search_grid:"Searched the grid record",challenge:"Cross-examined its own match",
+  research_context:"Researched the context",update_case_board:"Updated the case board",request_evidence:"Asked for more evidence",submit_report:"Filed the report"};
+let TZH=0; const hhmmss=iso=>{ if(!iso) return ''; const d=new Date(Date.parse(iso)+TZH*3600e3); return isNaN(d)?String(iso):d.toISOString().slice(11,19); };
+const hm=t=>new Date(t*1000+TZH*3600e3).toISOString().slice(11,16);
+const day=iso=>{const d=new Date(iso);return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'})};
+
+async function init(){
+  const cases=await (await fetch('/api/cases')).json();
+  $('#caseSel').innerHTML=cases.map(c=>`<option value="${c.case_id}">${c.title}</option>`).join('');
+  const runs=await (await fetch('/api/runs')).json();
+  $('#pastSel').innerHTML+=runs.map(r=>`<option value="${r.run_id}">${r.case_id} · ${r.verdict||r.status} · ${r.run_id.slice(9,15)}</option>`).join('');
+  const q=new URLSearchParams(location.search);
+  if(q.get('present')){ document.body.classList.add('present'); document.documentElement.classList.add('present'); }
+  if(q.get('run')) attach(q.get('run'), parseFloat(q.get('speed')||'0'));
+}
+$('#go').onclick=async()=>{
+  const res=await fetch('/api/runs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({case_id:$('#caseSel').value})});
+  if(!res.ok){alert((await res.json()).detail);return;} attach((await res.json()).run_id,0);
+};
+$('#pastSel').onchange=e=>e.target.value&&attach(e.target.value,4);
+
+function reset(){
+  ['#cards','#thumbs','#strip','#times','#stamps','#plan'].forEach(s=>$(s).innerHTML=''); nCard=0; lastSearch=lastTrace=null;
+  $('#hyps').innerHTML=''; $('#planv').hidden=true; $('#verdict').className='verdict'; $('#verdict').textContent='INVESTIGATING…';
+  $('#headline').innerHTML='The agent is working the case.';
+  for(const id of ['sAudio','sLight']){const s=$('#'+id); s.className='sensor'; s.querySelector('.badge').textContent='not checked'; s.querySelector('i').style.width='0'; s.querySelector('small').innerHTML='&nbsp;';}
+  ['cA','cB'].forEach(clear); $('#eA').hidden=false; $('#eB').hidden=false; $('#legA').innerHTML=''; $('#legB').innerHTML='';
+  $('#capA').innerHTML="<b>The grid's fingerprint</b> hidden in this recording"; $('#capB').innerHTML="<b>Search</b> of the national grid record";
+}
+function attach(id,speed){
+  reset(); runId=id; if(es) es.close(); let seen=0;
+  es=new EventSource(`/api/runs/${id}/events?speed=${speed}`);
+  es.onmessage=m=>{const ev=JSON.parse(m.data); if(ev.seq<=seen) return; seen=ev.seq; handle(ev);};
+  es.addEventListener('done',()=>{es.close(); live(false);}); es.onerror=()=>{es.close(); live(false);};
+  live(true); $('#stxt').textContent='investigating';
+}
+function live(on){$('#status').classList.toggle('live',on);}
+function step(label,cls=''){const s=document.createElement('span'); s.className='step '+cls; s.textContent=label; $('#strip').appendChild(s);}
+function card(html,cls=''){const d=document.createElement('div'); d.className='card '+cls; d.innerHTML=html; $('#cards').appendChild(d);
+  $('#nbwrap').scrollTo({top:1e9,behavior:'smooth'}); return d;}
+function note(t){const d=document.createElement('div'); d.className='note'; d.textContent=t; $('#cards').appendChild(d); $('#nbwrap').scrollTo({top:1e9,behavior:'smooth'});}
+
+function handle(ev){
+  if(ev.type==='start'){const c=ev.case; TZH=(c.claim&&c.claim.display_utc_offset_h)||0; $('#ctitle').textContent=c.title; $('#cbrief').textContent=c.brief;
+    if(c.claim&&c.claim.description){$('#claim').hidden=false; $('#claimtxt').textContent=c.claim.description;}
+    const e0=(c.evidence||[])[0]; if(e0&&e0.preview) showVideo(e0);}
+  if(ev.type==='thinking'||ev.type==='say'){ note(ev.text.length>230?ev.text.slice(0,228)+'…':ev.text); }
+  if(ev.type==='tool_call'){
+    CALLS[ev.id]=ev.input; nCard++; $('#count').textContent=nCard+' steps';
+    if(ev.name==='request_evidence'){ card(`<div class="hd">✋ ${NAMES[ev.name]}</div><div class="why">${ev.input.why}</div><div class="res"><b>${ev.input.what}</b></div>`,'request'); step('asked for more evidence','v'); return; }
+    if(ev.name==='submit_report'){ card(`<div class="hd">📄 ${NAMES[ev.name]}</div>`); step('report','g'); return; }
+    card(`<div class="hd"><span class="n">${String(nCard).padStart(2,'0')}</span>${NAMES[ev.name]||ev.name}<span style="margin-left:auto" class="spin" id="sp_${ev.id}"></span></div>
+          <div class="why">${ev.input.reason||''}</div><div class="res" id="r_${ev.id}" hidden></div>`);
+  }
+  if(ev.type==='tool_result'){ const sp=document.getElementById('sp_'+ev.id); if(sp) sp.remove();
+    const el=document.getElementById('r_'+ev.id); const txt=summarise(ev); if(el&&txt){el.hidden=false; el.innerHTML=txt;} artefacts(ev); }
+  if(ev.type==='board') board(ev.board);
+  if(ev.type==='request'){ $('#verdict').className='verdict WAITING'; $('#verdict').textContent='WAITING FOR EVIDENCE';
+    $('#headline').innerHTML=`${ev.request.what}<small>`+(ev.available||[]).map(a=>`<button class="sup" onclick="supply('${a.id}')">Supply: ${a.label}</button>`).join('')+
+      `<button class="sup alt" onclick="supply(null)">Nothing available</button></small>`; }
+  if(ev.type==='evidence_supplied'){ card(`<div class="hd">📥 Investigator supplied new evidence</div><div class="res"><b>${ev.evidence.id}</b> · ${ev.evidence.label}</div>`,'supplied');
+    step('evidence supplied','g'); $('#verdict').className='verdict'; $('#verdict').textContent='INVESTIGATING…'; $('#headline').textContent='New evidence received. The agent continues.'; }
+  if(ev.type==='report') report(ev.report);
+  if(ev.type==='end'){ live(false); $('#stxt').textContent=ev.status+(ev.usage?` · ${ev.usage.calls} model calls`:''); if(es) es.close(); }
+}
+async function supply(eid){ await fetch(`/api/runs/${runId}/supply`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({evidence_id:eid})}); }
+function showVideo(e){ $('#ev').innerHTML=`<video src="${e.preview}" autoplay muted loop playsinline></video><div class="tag">${e.id} · ${e.label}</div>`; }
+
+function summarise(ev){
+  const r=ev.result||{}; if(ev.error) return `<span class="no">${r.error}</span>`;
+  switch(ev.name){
+    case 'view_frames': return `<b>${r.frames}</b> frames inspected · ${(r.info||{}).resolution||''} · ${Math.round((r.info||{}).duration_s||0)} s`;
+    case 'probe_signals': return Object.entries(r.channels||{}).map(([k,v])=>`${k==='audio_hum'?'sound':'lights'}: <b class="${v.strength==='strong'?'ok':v.strength==='weak'?'am':'no'}">${v.strength}</b> · ${v.median_quality_db} dB · ${Math.round(v.usable_fraction*100)}% usable`).join('\n');
+    case 'extract_trace': return `<b>${Math.round(r.duration_s/60*10)/10} min</b> of grid signal from the ${r.channel==='video'?'lights':'sound'} · <b class="${r.strength==='strong'?'ok':'am'}">${r.strength}</b>`;
+    case 'grid_coverage': return `1-second archive: ${(r.NESO_1s_months_local||[]).length} months · 15-second feed: any date`;
+    case 'search_grid': { const c=r.top_candidates||[]; if(!c.length) return short(r);
+      return `searched <b>${r.hours_searched} h</b> of ${String(r.reference).split(' ')[0]} record\nbest  <b class="ok">${day(c[0].start_utc)} ${hhmmss(c[0].start_utc)}</b>  score <b>${c[0].score.toFixed(2)}</b>\nnext  ${c[1]?hhmmss(c[1].start_utc)+'  score '+c[1].score.toFixed(2):'—'}`; }
+    case 'challenge': return Object.entries(r.tests||{}).map(([k,v])=>`<span class="${v.pass?'ok':'no'}">${v.pass?'✔':'✘'}</span> ${({rival_days:'other days cannot match it',split_halves:'both halves agree',sharpness:'pins one moment'})[k]||k}`).join('\n');
+    case 'update_case_board': return `plan v${r.plan_version}`;
+    case 'research_context': return short(r);
+    default: return short(r);
+  }
+}
+const short=o=>JSON.stringify(o).slice(0,200);
+
+async function artefacts(ev){
+  const r=ev.result||{}, inp=CALLS[ev.id]||{};
+  if(ev.name==='view_frames'){ const eid=(r.info||{}).evidence_id; step('looked');
+    if(!$('#ev video')) $('#ev').innerHTML=`<img src="/runs/${runId}/frame_${eid}_0.jpg"><div class="tag">${eid}</div>`;
+    $('#thumbs').innerHTML=''; for(let i=0;i<Math.min(4,r.frames||0);i++) $('#thumbs').innerHTML+=`<img src="/runs/${runId}/frame_${eid}_${i}.jpg">`; }
+  if(ev.name==='probe_signals'){ const a=(r.channels||{}).audio_hum, l=(r.channels||{}).light_flicker; step('sensor test');
+    const set=(id,v)=>{ if(!v) return 0; const s=$('#'+id); s.querySelector('i').style.width=Math.max(4,Math.min(100,v.usable_fraction*100))+'%';
+      s.querySelector('small').textContent=`${v.median_quality_db} dB · ${Math.round(v.usable_fraction*100)}% usable`; s.querySelector('.badge').textContent=v.strength; return v.usable_fraction*v.median_quality_db; };
+    const sa=set('sAudio',a), sl=set('sLight',l);
+    if(!a){$('#sAudio .badge').textContent='no audio track'; $('#sAudio').classList.add('lose');} if(!l){$('#sLight .badge').textContent='no picture'; $('#sLight').classList.add('lose');}
+    setTimeout(()=>{ const w=sl>=sa?'sLight':'sAudio', lo=sl>=sa?'sAudio':'sLight'; $('#'+w).classList.add('win'); $('#'+w+' .badge').textContent='chosen';
+      if((sl>=sa?a:l)) { $('#'+lo).classList.add('lose'); $('#'+lo+' .badge').textContent='rejected'; } },1100); }
+  if(ev.name==='extract_trace'&&r.trace_id){ const d=await (await fetch(`/runs/${runId}/trace_${r.trace_id.replaceAll(':','_')}.json`)).json(); lastTrace=d; $('#eA').hidden=true; step('fingerprint','k');
+    $('#capA').innerHTML=`<b>The grid's fingerprint</b> read from the ${r.channel==='video'?'lights':'sound'} · ${Math.round(r.duration_s/60*10)/10} min`;
+    $('#legA').innerHTML=`<i style="background:${css('--amber')}"></i>this recording`;
+    draw('cA',[{x:d.t,y:d.f,c:css('--amber'),w:2.6}],{yfmt:v=>v.toFixed(3)+' Hz',xfmt:s=>Math.round(s/60)+' min',animate:true}); }
+  if(ev.name==='search_grid'&&r.search_id){ const d=await (await fetch(`/runs/${runId}/search_${r.search_id}.json`)).json(); lastSearch=d; $('#eB').hidden=true; $('#stamps').innerHTML=''; step('search');
+    $('#capB').innerHTML=`<b>Search:</b> sliding the fingerprint along ${r.hours_searched} h of the grid record`;
+    $('#legB').innerHTML=`<i style="background:${css('--cyan')}"></i>match score`;
+    draw('cB',[{x:d.starts,y:d.score,c:css('--cyan'),w:1.6}],{mark:d.peaks[0],mark2:d.peaks[1],yfmt:v=>v.toFixed(1),xfmt:hm,animate:true}); }
+  if(ev.name==='challenge'&&r.candidate_start_utc){ step('cross-examined',Object.values(r.tests||{}).every(t=>t.pass)?'g':'k');
+    const tid=inp.trace_id||'E1:video'; const res=await fetch(`/runs/${runId}/overlay_${tid.replaceAll(':','_')}.json`);
+    if(res.ok){ const d=await res.json(); $('#eA').hidden=true;
+      $('#capA').innerHTML=`<b>Lock:</b> this recording laid over the grid record at ${hhmmss(r.candidate_start_utc)}`;
+      $('#legA').innerHTML=`<i style="background:${css('--cyan')}"></i>grid record<i style="background:${css('--amber')}"></i>this recording`;
+      draw('cA',[{x:d.t,y:d.grid,c:css('--cyan'),w:3.2},{x:d.t,y:d.recording,c:css('--amber'),w:2}],{yfmt:v=>v.toFixed(3)+' Hz',xfmt:hm,animate:true}); }
+    const L={rival_days:'other days',split_halves:'both halves',sharpness:'one moment'}; let i=0;
+    for(const [k,v] of Object.entries(r.tests||{})){ const s=document.createElement('span'); s.className='stamp '+(v.pass?'ok':'no'); s.style.animationDelay=(0.5+0.5*i++)+'s'; s.textContent=(v.pass?'✔ ':'✘ ')+(L[k]||k); $('#stamps').appendChild(s);} }
+}
+function board(b){
+  if(b.plan_version){$('#planv').hidden=false; $('#planv').textContent='plan v'+b.plan_version; if(b.plan_version>1) step('plan v'+b.plan_version,'v');}
+  $('#hyps').innerHTML=(b.hypotheses||[]).map(h=>`<div class="hyp ${h.status}"><span class="chip">${h.status.replace('_',' ')}</span><span><span class="st">${h.statement}</span>${h.note?`<small>${h.note}</small>`:''}</span></div>`).join('');
+  $('#plan').innerHTML=(b.plan||[]).map(p=>`<li>${p}</li>`).join('');
+}
+function report(r){
+  const vc = r.supports_claimant==='yes'?'CORROBORATED':(r.verdict==='INCONCLUSIVE'?'INCONCLUSIVE':(r.supports_claimant==='no'?'DISCREPANCY':r.verdict));
+  $('#verdict').className='verdict '+vc; $('#verdict').innerHTML=(r.bottom_line||(r.verdict==='DISCREPANCY'?'CLOCK DISCREPANCY':r.verdict)).toUpperCase()+
+    `<small style="display:block;font:11px var(--mono);letter-spacing:1px;opacity:.8;margin-top:2px">${r.verdict==='DISCREPANCY'?'CLOCK DISCREPANCY FOUND':r.verdict}</small>`;
+  $('#headline').innerHTML=`${r.headline}<small>confidence: ${r.confidence}${r.difference?' · '+r.difference:''}</small>`;
+  let h=''; if(r.claimed_start_utc) h+=`<div class="tbox stated"><small>camera clock</small><b>${hhmmss(r.claimed_start_utc)}</b></div>`;
+  if(r.claimed_start_utc&&r.recovered_start_utc) h+='<div class="arrow">→</div>';
+  if(r.recovered_start_utc) h+=`<div class="tbox rec"><small>true time, from the grid</small><b>${hhmmss(r.recovered_start_utc)}</b></div>`;
+  $('#times').innerHTML=h;
+}
+/* ---------- charts ---------- */
+function clear(id){const c=document.getElementById(id); const g=c.getContext('2d'); c.width=c.clientWidth*2; c.height=c.clientHeight*2; g.clearRect(0,0,c.width,c.height);}
+function draw(id,series,opt={}){
+  const c=document.getElementById(id), g=c.getContext('2d'); const W=c.width=c.clientWidth*2, H=c.height=c.clientHeight*2;
+  const all=series.flatMap(s=>s.y.filter(v=>v!==null&&isFinite(v))); let lo=Math.min(...all), hi=Math.max(...all); const pad=(hi-lo)*.12||1; lo-=pad; hi+=pad*1.6;
+  const xs=series[0].x, n=xs.length, L=96, R=24, T=64, B=44;
+  const X=i=>L+(W-L-R)*(i/(n-1)), Y=v=>T+(H-T-B)*(1-(v-lo)/(hi-lo));
+  const t0=performance.now(), dur=opt.animate?1400:0;
+  (function frame(){
+    const p=dur?Math.min(1,(performance.now()-t0)/dur):1, upto=Math.floor(p*(n-1));
+    g.clearRect(0,0,W,H); g.font='20px Consolas,monospace'; g.fillStyle='#5b6675'; g.strokeStyle='#1a2028'; g.lineWidth=1;
+    for(let k=0;k<4;k++){const v=lo+(hi-lo)*(k+.5)/4, y=Y(v); g.beginPath(); g.moveTo(L,y); g.lineTo(W-R,y); g.stroke(); g.fillText(opt.yfmt?opt.yfmt(v):v.toFixed(2),8,y+7);}
+    for(let k=0;k<=4;k++){const i=Math.round((n-1)*k/4); g.fillText(opt.xfmt?opt.xfmt(xs[i]):xs[i],Math.min(X(i)-20,W-R-70),H-12);}
+    for(const s of series){ g.strokeStyle=s.c; g.lineWidth=s.w*2||3; g.lineJoin='round'; g.beginPath(); let pen=false;
+      for(let i=0;i<=upto;i++){const v=s.y[i]; if(v===null||!isFinite(v)){pen=false;continue;} pen?g.lineTo(X(i),Y(v)):g.moveTo(X(i),Y(v)); pen=true;} g.stroke(); }
+    if(p>=1&&opt.mark){ const mk=(m,col,lab)=>{const t=Date.parse(m.start_utc)/1000; let bi=0,bd=1e18; xs.forEach((x,i)=>{const d=Math.abs(x-t); if(d<bd){bd=d;bi=i;}});
+        g.fillStyle=col; g.beginPath(); g.arc(X(bi),Y(m.score),lab?11:7,0,7); g.fill();
+        if(lab){ g.font='600 24px "Segoe UI",sans-serif'; const tx=`${hhmmss(m.start_utc)} · score ${m.score.toFixed(2)}`; const tw=g.measureText(tx).width;
+          g.fillText(tx,Math.max(L,Math.min(X(bi)-tw/2,W-R-tw)),Y(m.score)-20);} };
+      if(opt.mark2) mk(opt.mark2,'#5b6675',false); mk(opt.mark,css('--green'),true); }
+    if(p<1) requestAnimationFrame(frame);
+  })();
+}
+init();
+</script>
+</body>
+</html>

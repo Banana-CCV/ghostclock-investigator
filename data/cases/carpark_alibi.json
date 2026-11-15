@@ -1,0 +1,21 @@
+{
+  "case_id": "carpark_alibi",
+  "title": "Two places at once: the car park alibi",
+  "brief": "Motor claim. A third party says the policyholder's black SUV reversed into her car at 20:36 on Thursday 17 September 2026, four miles from his flat, and has a photo of the number plate. The policyholder says his car never left its bay in his building's underground car park that evening, and the building has supplied its CCTV. The insurer's position: 'CCTV clocks drift, so this footage could be from any time', and it intends to record a fault claim against him. Establish independently when this footage was really recorded, and whether the car was in its bay at 20:36. Times are UK local time (BST = UTC+1).",
+  "claim": {
+    "description": "CCTV overlay says the clip runs 20:33:00 to 20:39:00 BST on 17 Sep 2026 (19:33:00 to 19:39:00 UTC). Alleged collision elsewhere: 20:36 BST.",
+    "stated_start_utc": "2026-09-17T19:33:00Z",
+    "display_utc_offset_h": 1
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "label": "CAM 3 LEVEL B2, building CCTV export, 6 min",
+      "kind": "video",
+      "path": "data/media/carpark_cam3.mp4",
+      "preview": "/media/carpark_cam3_preview.mp4",
+      "stated_start_utc": "2026-09-17T19:33:00Z",
+      "source": "building management recorder (export)"
+    }
+  ]
+}

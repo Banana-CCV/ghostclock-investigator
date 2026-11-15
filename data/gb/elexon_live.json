@@ -1,0 +1,22 @@
+{
+  "source": "ELEXON",
+  "cadence_s": 15,
+  "grid": "GB",
+  "coverage": [
+    1794009600,
+    1794237585
+  ],
+  "coverage_iso": [
+    "2026-11-07T00:00:00Z",
+    "2026-11-09T15:19:45Z"
+  ],
+  "n_rows": 15200,
+  "n_nan": 0,
+  "invalid_values_note": "Elexon 0.0 placeholders / values outside 45-55 Hz stored as NaN",
+  "n_missing_15s_slots": 0,
+  "url": "https://data.elexon.co.uk/bmrs/api/v1/system/frequency",
+  "dataset": "BMRS FREQ (Elexon Insights)",
+  "live_archive": true,
+  "updated_utc": "2026-11-09T15:20:21Z",
+  "sha256": "43a7b080ac83cf6867826fcd2ef215d06d3fa16f321cea71b4a7f0ae63e9aceb"
+}

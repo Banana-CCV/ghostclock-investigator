@@ -1,0 +1,12 @@
+numpy
+scipy
+pandas
+pyarrow
+opencv-python-headless
+av
+soundfile
+matplotlib
+requests
+anthropic
+fastapi
+uvicorn
