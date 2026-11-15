@@ -51,6 +51,26 @@ All 43 excerpts come from one recording and overlap, so they are not independent
 | [`venue_short`](../runs/venue_short/events.jsonl) | 49-second clip | Declined. Asked for a longer recording. |
 | [`venue_two_files`](../runs/venue_two_files/events.jsonl) | 49-second clip, with another recording available on request | Asked for it, dated the longer recording, and concluded the phone's clock was accurate to about 2 seconds. |
 
+### Further live runs on slices of the same recording
+
+Each case gives the agent a slice of the recording and a stated start time that is either right or deliberately wrong. The agent never sees the truth. Scored by `eval/run_agent_cases.py` (correct = within 5 seconds).
+
+| Run | Evidence | Outcome |
+|---|---|---|
+| [`eval_8min_a`](../runs/eval_8min_a/events.jsonl) | 8 min slice, stated correctly | Correct, 1 s off, corroborated |
+| [`eval_8min_b`](../runs/eval_8min_b/events.jsonl) | 8 min slice, stated 40 min early | Correct, 1 s off, discrepancy |
+| [`eval_12min_a`](../runs/eval_12min_a/events.jsonl) | 12 min slice, stated correctly | Correct, 2 s off, corroborated |
+| [`eval_12min_b`](../runs/eval_12min_b/events.jsonl) | 12 min slice, stated 1 day early | Declined, asked for more evidence |
+| [`eval_full_wrongday`](../runs/eval_full_wrongday/events.jsonl) | 18 min slice, stated 1 day late | Correct, 2 s off, discrepancy |
+| [`eval_3min`](../runs/eval_3min/events.jsonl) | 3 min slice, stated correctly | Declined, asked for more evidence |
+| [`eval_10min_c`](../runs/eval_10min_c/events.jsonl) | 10 min slice, stated 2 days late | Correct, 1 s off, discrepancy |
+| [`eval_11min_d`](../runs/eval_11min_d/events.jsonl) | 11 min slice, stated almost 3 days early | Correct, 1 s off, discrepancy |
+| [`eval_14min_e`](../runs/eval_14min_e/events.jsonl) | 14 min slice, stated correctly | Correct, 1 s off, corroborated |
+
+One of the two declines (`eval_12min_b`, stated a day early) was a miss: the agent searched only the stated day and asked for more evidence instead of widening to neighbouring days. We tightened its search guidance after that run; the three cases run afterwards (`eval_10min_c`, `eval_11min_d`, `eval_14min_e`) include two stated days off, and it widened and found the true time in both.
+
+**Tally across all 15 live investigations: 11 correct (all within 2 s), 4 declined, 0 wrong.**
+
 The raw venue recordings are 2.9 GB and are not in the repository. Their extracted frequency traces are (`data/cases/venue/`), so every run and the benchmark can be repeated.
 
 ## 4. Audio, on a public benchmark

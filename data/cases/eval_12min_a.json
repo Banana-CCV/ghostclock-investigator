@@ -1,0 +1,31 @@
+{
+  "case_id": "eval_12min_a",
+  "title": "Disputed recording 3",
+  "brief": "A 12-minute indoor phone video is offered as evidence. It is said to start at 11:42:37 UTC on Sunday 08 November 2026. Establish independently when it was recorded and whether the stated time holds.",
+  "claim": {
+    "description": "Stated start: 2026-11-08 11:42:37 UTC.",
+    "stated_start_utc": "2026-11-08T11:42:37Z"
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "label": "Indoor video, 12 min (ceiling strip lights)",
+      "kind": "video",
+      "path": "data/media/venue/A001_11081142_C004.mp4",
+      "excerpt_s": [
+        0,
+        720
+      ],
+      "stated_start_utc": "2026-11-08T11:42:37Z",
+      "source": "supplied by a party to the dispute",
+      "cache": {
+        "video": "data/cases/venue/C004_video.csv",
+        "audio": "data/cases/venue/C004_audio.csv"
+      }
+    }
+  ],
+  "truth": {
+    "true_start_utc": "2026-11-08T11:42:37Z",
+    "stated_shift_s": 0
+  }
+}

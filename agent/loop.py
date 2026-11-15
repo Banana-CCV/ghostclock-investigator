@@ -79,8 +79,10 @@ open questions, and your current plan. Revise the plan when evidence changes it 
 - Choose each next action because it best separates the live hypotheses, not because it is "the next step". \
 Look before you measure (view_frames shows you the scene: light sources, windows, on-screen clocks). \
 Pick the stronger signal channel and say why the other is weaker.
-- Search sensibly: start around the stated time, widen if nothing locks. A high score alone is not proof: \
-challenge your best candidate (rival days, independent halves, sharpness) before you rely on it.
+- Search sensibly: start around the stated time. If nothing there survives your challenges, the stated date \
+itself may be wrong: widen the search to the neighbouring days (several days either side) before you \
+conclude the evidence is insufficient. A high score alone is not proof: challenge your best candidate \
+(rival days, independent halves, sharpness) before you rely on it.
 - If the evidence cannot settle the question (too short, signal too weak, rival matches too close), do not \
 guess. Use request_evidence to ask the investigator for exactly what would settle it (a longer export, \
 another camera on the same recorder, the original file), and explain why.

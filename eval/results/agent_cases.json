@@ -1,0 +1,110 @@
+{
+ "eval_8min_a": {
+  "run_id": "20261115-082846-e7d6",
+  "status": "reported",
+  "verdict": "CORROBORATED",
+  "confidence": "high",
+  "recovered_start_utc": "2026-11-08T11:45:38Z",
+  "true_start_utc": "2026-11-08T11:45:37Z",
+  "error_s": 1.0,
+  "outcome": "correct",
+  "calls": 5,
+  "bottom_line": "Recording started 11:45 UTC, 8 Nov, as claimed"
+ },
+ "eval_8min_b": {
+  "run_id": "20261115-082911-7235",
+  "status": "reported",
+  "verdict": "DISCREPANCY",
+  "confidence": "high",
+  "recovered_start_utc": "2026-11-08T11:47:08Z",
+  "true_start_utc": "2026-11-08T11:47:07Z",
+  "error_s": 1.0,
+  "outcome": "correct",
+  "calls": 6,
+  "bottom_line": "Recorded ~40 min later than stated, 11:47"
+ },
+ "eval_12min_a": {
+  "run_id": "20261115-082945-b475",
+  "status": "reported",
+  "verdict": "CORROBORATED",
+  "confidence": "high",
+  "recovered_start_utc": "2026-11-08T11:42:39Z",
+  "true_start_utc": "2026-11-08T11:42:37Z",
+  "error_s": 2.0,
+  "outcome": "correct",
+  "calls": 6,
+  "bottom_line": "Recorded at the stated time, 08 Nov ~11:42"
+ },
+ "eval_12min_b": {
+  "run_id": "20261115-083017-d601",
+  "status": "awaiting_evidence",
+  "verdict": null,
+  "confidence": null,
+  "recovered_start_utc": "",
+  "true_start_utc": "2026-11-08T11:48:37Z",
+  "error_s": null,
+  "outcome": "declined",
+  "calls": 7,
+  "bottom_line": null
+ },
+ "eval_full_wrongday": {
+  "run_id": "20261115-083058-8763",
+  "status": "reported",
+  "verdict": "DISCREPANCY",
+  "confidence": "high",
+  "recovered_start_utc": "2026-11-08T11:42:39Z",
+  "true_start_utc": "2026-11-08T11:42:37Z",
+  "error_s": 2.0,
+  "outcome": "correct",
+  "calls": 7,
+  "bottom_line": "Recorded Sunday 8 Nov, not Monday 9 Nov"
+ },
+ "eval_3min": {
+  "run_id": "20261115-083150-ddef",
+  "status": "awaiting_evidence",
+  "verdict": null,
+  "confidence": null,
+  "recovered_start_utc": "",
+  "true_start_utc": "2026-11-08T11:50:07Z",
+  "error_s": null,
+  "outcome": "declined",
+  "calls": 5,
+  "bottom_line": null
+ },
+ "eval_10min_c": {
+  "run_id": "20261115-083332-88af",
+  "status": "reported",
+  "verdict": "DISCREPANCY",
+  "confidence": "high",
+  "recovered_start_utc": "2026-11-08T11:44:08Z",
+  "true_start_utc": "2026-11-08T11:44:07Z",
+  "error_s": 1.0,
+  "outcome": "correct",
+  "calls": 7,
+  "bottom_line": "Recorded 8 Nov, not 10 Nov"
+ },
+ "eval_11min_d": {
+  "run_id": "20261115-083708-50f3",
+  "status": "reported",
+  "verdict": "DISCREPANCY",
+  "confidence": "high",
+  "recovered_start_utc": "2026-11-08T11:49:38Z",
+  "true_start_utc": "2026-11-08T11:49:37Z",
+  "error_s": 1.0,
+  "outcome": "correct",
+  "calls": 7,
+  "bottom_line": "Recorded 8 Nov 11:49, not 5 Nov"
+ },
+ "eval_14min_e": {
+  "run_id": "20261115-083907-dd94",
+  "status": "reported",
+  "verdict": "CORROBORATED",
+  "confidence": "high",
+  "recovered_start_utc": "2026-11-08T11:43:38Z",
+  "true_start_utc": "2026-11-08T11:43:37Z",
+  "error_s": 1.0,
+  "outcome": "correct",
+  "calls": 5,
+  "bottom_line": "Recording started 11:43:38 UTC, 8 Nov 2026, as stated"
+ }
+}

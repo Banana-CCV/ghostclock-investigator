@@ -98,7 +98,7 @@ It answers only when one moment clearly beats every other in the week and both h
 
 ## How often it works
 
-Six live agent investigations on real recordings and the demo case: **4 dated correctly (all within 2 seconds), 2 correctly declined to guess, 0 wrong answers.** Every run's decision log is in [`runs/`](runs/).
+Fifteen live agent investigations, on the demo case and on slices of our real recording with correct and deliberately wrong stated times: **11 dated correctly (all within 2 seconds), 4 declined to guess, 0 wrong answers.** In the wrong-time cases (clock off by 40 minutes, 2 hours, 1 to 3 days) the agent found the true time and reported the discrepancy. Results: [`eval/results/agent_cases.json`](eval/results/agent_cases.json); every run's decision log is in [`runs/`](runs/).
 
 ## What is real and what is reconstructed
 
