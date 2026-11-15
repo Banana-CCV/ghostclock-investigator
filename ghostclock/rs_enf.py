@@ -195,7 +195,7 @@ def rs_enf_trace(s, t_frames, fps, H, row_bin, T_ro, f_grid=50.0, rows=None, win
                  hop_s=1.0, band=0.5, degenerate=None):
     """Heterodyne + track.  Only at degenerate frame rates (fps divides f0) does the static
     scene land on 0 Hz in baseband; there (and only there) the whole-clip mean of z is removed.
-    (A 60 s moving-mean high-pass at 30 fps was measured to *cost* accuracy: synthetic
+    (A 60 s moving-mean high-pass at 30 fps was measured to *cost* accuracy: test
     fps30_tro25 RMSE 3.27 -> 0.34 mHz without it; see progress.md.)"""
     f0 = 2 * f_grid
     if degenerate is None:
@@ -325,7 +325,7 @@ def run_video(path, f_grid=50.0, row_bin=4, n_col=16, max_frames=None, win_s=16.
     a, _ = alias_of(f0, fps)
     degenerate = bool(abs(a) < 0.5)
     # degenerate fps: flicker is (nearly) static in each cell -> only a whole-clip mean may be
-    # removed (measured on synthetic fps25: r 0.948 -> 0.986).  Otherwise 60 s moving mean.
+    # removed (measured on a 25 fps test clip: r 0.948 -> 0.986).  Otherwise 60 s moving mean.
     s, naive, rows, motion = row_signals(cells, mask, fps, 1e9 if degenerate else mean_win_s)
     n_use = min(len(t), int(tro_seconds * fps))
     if Tro is None:

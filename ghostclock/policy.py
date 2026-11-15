@@ -37,7 +37,7 @@ class PolicyThresholds:
     min_valid_fraction: float = 0.50
 
     # 2. Physical frequency variability gates (in mHz)
-    # Guards against flat 50.000 Hz synthetic tones (std < 0.8 mHz) and
+    # Guards against flat 50.000 Hz test tones (std < 0.8 mHz) and
     # wild unphysical noise/random walks (std > 200 mHz).
     min_trace_std_mhz: float = 0.80
     max_trace_std_mhz: float = 200.0
