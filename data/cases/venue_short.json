@@ -1,10 +1,10 @@
 {
   "case_id": "venue_short",
   "title": "49-second clip: when was it recorded?",
-  "brief": "A 49-second phone clip filmed in a dark room at a hackathon venue, said to be from Sunday 8 November 2026 around 11:03 UTC. Establish when it was really recorded.",
+  "brief": "A 49-second phone clip filmed in a university classroom at a hackathon, on an ordinary phone, said to be from Sunday 8 November 2026 around 11:03 UTC. Establish when it was really recorded.",
   "claim": {"description": "File metadata says recording started 2026-11-08 11:03 UTC.", "stated_start_utc": "2026-11-08T11:03:00Z"},
   "evidence": [
-    {"id": "E1", "label": "Venue clip A001_11081103_C002 (49 s, dark room)", "kind": "video",
+    {"id": "E1", "label": "Venue clip A001_11081103_C002 (49 s, classroom)", "kind": "video",
      "path": "data/media/venue/A001_11081103_C002.mp4",
      "stated_start_utc": "2026-11-08T11:03:00Z", "source": "team recording",
      "cache": {"video": "data/cases/venue/C002_video.csv", "audio": "data/cases/venue/C002_audio.csv"}}

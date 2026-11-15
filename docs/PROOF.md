@@ -1,6 +1,6 @@
 # Proof that it works on real recordings
 
-Everything on this page uses real recordings and real grid data. Nothing here is simulated.
+Everything on this page uses real recordings and real grid data.
 
 ## 1. Our own phone video, dated to 2 seconds
 

@@ -1,10 +1,10 @@
 {
   "case_id": "venue_two_files",
   "title": "Short clip: can its time be trusted?",
-  "brief": "A 49-second phone clip filmed in a dark room is said to have been recorded on Sunday 8 November 2026 at about 11:03 UTC. The time matters to a dispute. The same phone made other recordings that day, which can be requested from the owner if needed.",
+  "brief": "A 49-second phone clip filmed in a university classroom on an ordinary phone is said to have been recorded on Sunday 8 November 2026 at about 11:03 UTC. The time matters to a dispute. The same phone made other recordings that day, which can be requested from the owner if needed.",
   "claim": {"description": "Phone metadata: clip started 2026-11-08 11:03 UTC.", "stated_start_utc": "2026-11-08T11:03:00Z"},
   "evidence": [
-    {"id": "E1", "label": "Phone clip, 49 s, dark room with ceiling strip lights", "kind": "video",
+    {"id": "E1", "label": "Phone clip, 49 s, classroom with ceiling strip lights", "kind": "video",
      "path": "data/media/venue/A001_11081103_C002.mp4", "stated_start_utc": "2026-11-08T11:03:00Z", "source": "phone owner",
      "cache": {"video": "data/cases/venue/C002_video.csv", "audio": "data/cases/venue/C002_audio.csv"}}
   ],

@@ -48,7 +48,7 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     inv = sub.add_parser("investigate")
     inv.add_argument("case_id")
-    inv.add_argument("--auto-supply", action="store_true", help="simulate the investigator supplying requests")
+    inv.add_argument("--auto-supply", action="store_true", help="answer evidence requests automatically from the case file")
     inv.add_argument("--effort", default="medium")
     inv.add_argument("--model", default=None)
     inv.add_argument("--offline-from", default=None,
